@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Semantic Search</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+    <!-- for big screens-->
+    <div class="container-fluid d-sm-block d-none overflow-hidden">
+        <div class="row gx-5">
+            <div class="col-4 col-sm-3 bg-light vh-100">
+                <div class="d-flex align-items-center justify-content-center mb-3 mt-3">
+                    <span class="fs-3">URLs</span>
+                </div>
+                <hr>
+                <form class="ms-2" onsubmit="event.preventDefault(); urlForm(this);">
+                    {% csrf_token %}
+                    <div id="url-block">
+                        <div class="mb-3">
+                            <label for="url1" class="form-label">url 1</label>
+                            <input type="url" class="form-control" id="url1">
+                        </div>
+                        <div class="mb-3">
+                            <label for="url2" class="form-label">url 2</label>
+                            <input type="url" class="form-control" id="url2">
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <button type="submit" class="btn btn-warning" id="sub">Submit</button>
+                        <i class="fa fa-plus" id="add-url" style="cursor:pointer;"></i>
+                    </div>
+                </form>
+            </div>
+
+            <!--Q&A section-->
+            <div class="col-8 col-sm-9 bg-light vh-100" id="Q-A">
+                <div class="d-flex align-items-center justify-content-center mb-3 mt-3">
+                    <span class="fs-3">Question & Answer</span>
+                </div>
+                <hr>
+                <form class="me-2" onsubmit="event.preventDefault(); queryAndAnswer();">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="query" class="form-label">Question</label>
+                        <input type="text" class="form-control" id="query" 
+                        {% if flag == 0 %}
+                         disabled 
+                        {% endif %}>
+                    </div>
+                    <button type="submit" class="btn btn-info" id="query-sub" 
+                    {% if flag == 0 %}
+                     disabled 
+                    {% endif %}>Submit</button>
+                </form>
+                <div id="answer" class="mt-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- for small screens-->
+    <div class="container-fluid d-block d-sm-none overflow-hidden position-relative">
+        <div class="bg-light vh-100" id="url-bar" style="display : none;">
+            <div class="d-flex align-items-center justify-content-between mb-3 mt-3">
+                <div></div>
+                <span class="fs-4">URLs</span>
+                <i class="fa fa-times me-0" style="cursor: pointer;" id="closer"></i>
+            </div>
+            <hr>
+            <form class="ms-2" onsubmit="event.preventDefault(); urlForms(this);">
+                {% csrf_token %}
+                <div id="url-block-s">
+                    <div class="mb-3">
+                        <label for="url1" class="form-label">url 1</label>
+                        <input type="url" class="form-control" id="url1-s">
+                    </div>
+                    <div class="mb-3">
+                        <label for="url2" class="form-label">url 2</label>
+                        <input type="url" class="form-control" id="url2-s">
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <button type="submit" class="btn btn-warning" id="sub-s">Submit</button>
+                    <i class="fa fa-plus" id="add-url-s" style="cursor:pointer;"></i>
+                </div>
+            </form>
+        </div>
+
+        <div class="row" id="qa-small">
+            <div class="col-2 vh-100 bg-secondary d-flex justify-content-center" id="pre-url-bar">
+                <i class="fa-solid fa-bars mt-4" style="cursor: pointer;" id="opener"></i>
+            </div>
+
+            <!--Q&A section-->
+            <div class="col-10 bg-light vh-100" id="Q-A-s">
+                <div class="d-flex align-items-center justify-content-center mb-3 mt-3">
+                    <span class="fs-4">Question & Answer</span>
+                </div>
+                <hr>
+                <form class="me-2" onsubmit="event.preventDefault(); queryAndAnswers();">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="query" class="form-label">Question</label>
+                        <input type="text" class="form-control" id="query-s" {% if flag == 0 %} disabled {% endif %}>
+                    </div>
+                    <button type="submit" class="btn btn-info" id="query-sub-s" 
+                    {% if flag == 0 %} disabled {% endif %}>Submit</button>
+                </form>
+                <div id="answer-s" class="mt-4"></div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+    integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+    crossorigin="anonymous"></script>
+<script src="/static/home.js"></script>
+<script src="/static/homes.js"></script>
+
+</html>
